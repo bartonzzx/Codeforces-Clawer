@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 新 Bootstrap5 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+    <!--  popper.min.js 用于弹窗、提示、下拉菜单 -->
+    <script src="https://cdn.staticfile.org/popper.js/2.9.3/umd/popper.min.js"></script>
+    <!-- 最新的 Bootstrap5 核心 JavaScript 文件 -->
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.min.js"></script>
+    <!-- echats文件 -->
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.2/dist/echarts.min.js"></script>
+
+    <link rel="icon" type="image/png" sizes="192x192" href="https://codeforces.org/s/0/android-icon-192x192.png">
+
+    <title>
+        Codeforces Clawer(Beta)
+    </title>
+
+    <style>
+        #data_level {
+            margin: auto;
+        }
+
+        #data_tag {
+            margin: auto;
+        }
+
+        #year_data {
+            margin: auto;
+        }
+
+        #data_heat {
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-md-12 column">
+                <div class="jumbotron">
+                    <img height="65" style="height: 65px;" alt="Codeforces" title="Codeforces"
+                        src="https://codeforces.org/s/16579/images/codeforces-sponsored-by-ton.png">
+                    <h1>
+                        Codeforces Clawer(Beta)
+                    </h1>
+                </div>
+                <div class="alert alert-success alert-dismissable">
+                    <h4>
+                        注意!
+                    </h4>
+                    <strong>说明:</strong>
+                    <br>
+                    关于beta版使用方法:
+                    <br>
+                    首先使用Codeforces Rating Clawer-2023.exe输入handle,在文件根目录下生成response.json和response_parsed.json
+                    <br>
+                    其次在文件选择控件处,选中response_parsed.json,即可使用
+                    <br>
+                    <br>
+                    关于数据准确性的说明:
+                    <br>
+                    统计数据全部来源于Codeforces用户Submission记录,因此过题数存在部分重复现象;
+                    <br>
+                    热力图数据全部来源于Codeforces用户Submission记录中的Accepted记录,且官方热力图数据统计规则较特殊,存在官方热力图不显示部分Submission记录,因此本热力图与官方热力图存在差别;
+                    <br>
+                    <br>
+                    关于难度分布图内的分类说明：
+                    <br>
+                    problem rating <= 1000 : Easy <br>
+                        1000 < problem rating <=1500 : Intermediate <br>
+                            1500 < problem rating <=2000 : Moderate <br>
+                                2000 < problem rating <=2500 : Challenging <br>
+                                    2500 < problem rating <=3000 : Difficult <br>
+                                        3000 < problem rating : Expert </div>
+                                            <form class="form-horizontal" role="form" style="margin-bottom: 20px;">
+                                                <div class="form-group" style="margin-bottom: 10px;">
+                                                    <label for="handle" class="col-sm-2 control-label">handle</label>
+                                                    <div class="col-sm-10">
+                                                        <input type="text" style="width: 270px;" class="form-control" id="handle"
+                                                            placeholder="输入handle(不多于24字符)" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group" style="margin-bottom: 20px;">
+                                                    <div class="col-sm-offset-2 col-sm-10">
+                                                        <button type="submit" class="btn btn-primary">提交</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <input type="file" id="fileInput">
+                                            <script>
+                                                var input = document.getElementById('fileInput');
+                                                var handle;
+                                                var min_year;
+                                                var max_year;
+                                                var year;
+                                                var data_all_solved;
+                                                var data_all_submitted;
+                                                var data_data_level;
+                                                var data_data_tag;
+                                                var data_year_data;
+                                                var data_data_heat;
+                                                var data_month_data_per_year;
+
+                                                //监听文件提交
+                                                input.addEventListener('change', function (e) {
+                                                    var file = e.target.files[0];
+
+                                                    var reader = new FileReader();
+
+                                                    reader.onload = function (e) {
+                                                        var jsonData = JSON.parse(e.target.result);
+
+                                                        updatechart(jsonData);
+                                                        console.log(jsonData);
+                                                    };
+
+                                                    reader.readAsText(file);
+                                                });
+
+                                                function updatechart(jsonData) {
+                                                    handle = jsonData.handle;
+
+                                                    min_year = jsonData.min_year;
+                                                    max_year = jsonData.max_year;
+                                                    year = jsonData.year;
+
+                                                    //调试
+                                                    console.log(year);
+
+                                                    data_all_solved = jsonData.data_all_solved;
+                                                    data_all_submitted = jsonData.data_all_submitted;
+                                                    data_data_level = jsonData.data_level;
+                                                    data_data_tag = jsonData.data_tag;
+                                                    data_year_data = jsonData.group_year_data;
+                                                    data_month_data_per_year = jsonData.group_month_data_per_year;
+                                                    data_data_heat = jsonData.group_data_heat;
+
+                                                    // 获取元素
+                                                    var addcontainer = document.getElementById('addaddcontainer');
+
+                                                    // 创建 data_all_submit 的 <h3> 元素
+                                                    var dataAllSubmitDiv = document.createElement('h3');
+                                                    dataAllSubmitDiv.id = 'data_all_submit';
+                                                    dataAllSubmitDiv.style.textAlign = 'center';
+                                                    dataAllSubmitDiv.style.margin = 'auto';
+
+                                                    // 创建 data_all_solved 的 <h3> 元素
+                                                    var dataAllSolvedDiv = document.createElement('h3');
+                                                    dataAllSolvedDiv.id = 'data_all_solved';
+                                                    dataAllSolvedDiv.style.textAlign = 'center';
+                                                    dataAllSolvedDiv.style.margin = 'auto';
+
+                                                    // 创建 data_level 的 <div> 元素
+                                                    var dataLevelDiv = document.createElement('div');
+                                                    dataLevelDiv.id = 'data_level';
+                                                    dataLevelDiv.style.width = '90%';
+                                                    dataLevelDiv.style.height = '500px';
+                                                    dataLevelDiv.className = 'col-md-6 column';
+
+                                                    // 创建 data_tag 的 <div> 元素
+                                                    var dataTagDiv = document.createElement('div');
+                                                    dataTagDiv.id = 'data_tag';
+                                                    dataTagDiv.style.width = '90%';
+                                                    dataTagDiv.style.height = '500px';
+                                                    dataTagDiv.className = 'col-md-6 column';
+
+                                                    // 创建year_data的 <div> 元素
+                                                    var dataYearDiv = document.createElement('div');
+                                                    dataYearDiv.id = 'year_data';
+                                                    dataYearDiv.style.width = '90%';
+                                                    dataYearDiv.style.height = '600px';
+                                                    dataYearDiv.className = 'col-md-12 column';
+
+                                                    // 创建select_tip的 <h3> 元素
+                                                    var selectTip = document.createElement('h3');
+                                                    selectTip.id = 'select_tip';
+                                                    selectTip.innerHTML = '请选择年份:';
+
+                                                    // 创建select_year的 <select> 元素
+                                                    var dataSelectSelect = document.createElement('select');
+                                                    dataSelectSelect.id = 'select_year';
+                                                    dataSelectSelect.style.width = '100px';
+                                                    dataSelectSelect.style.height = 'auto';
+                                                    dataSelectSelect.className = 'form-select';
+
+
+                                                    // 将新创建的元素添加到容器中
+                                                    addcontainer.appendChild(dataAllSubmitDiv);
+                                                    addcontainer.appendChild(dataAllSolvedDiv);
+                                                    addcontainer.appendChild(dataLevelDiv);
+                                                    addcontainer.appendChild(dataTagDiv);
+                                                    addcontainer.appendChild(dataYearDiv);
+                                                    addcontainer.appendChild(selectTip);
+                                                    addcontainer.appendChild(dataSelectSelect);
+
+                                                    //把读取的数据嵌入元素
+                                                    document.getElementById("data_all_solved").innerHTML = "总通过数: " + data_all_solved;
+                                                    document.getElementById("data_all_submit").innerHTML = "总提交数: " + data_all_submitted;
+
+                                                    var data_level = echarts.init(document.getElementById('data_level'));
+
+                                                    // 配置图表
+                                                    var data_level_option = {
+                                                        title: {
+                                                            text: handle + '的\n解题难度分布',
+                                                            left: 'center',
+                                                            textStyle: {
+                                                                fontSize: 24,
+                                                            },
+                                                        },
+                                                        tooltip: {},
+                                                        legend: {
+                                                            data: ['solved problems'],
+                                                            right: "0%",
+                                                        },
+                                                        xAxis: {
+                                                            data: ['Easy', 'Intermediate', 'Moderate', 'Challenging', 'Difficult', 'Expert'],
+                                                            axisLabel: {
+                                                                rotate: 20,
+                                                            },
+                                                        },
+                                                        yAxis: {},
+                                                        series: [
+                                                            {
+                                                                name: 'solved problems',
+                                                                type: 'bar',
+                                                                data: data_data_level,
+                                                            }
+                                                        ]
+                                                    };
+                                                    // 显示图表
+                                                    data_level.setOption(data_level_option);
+
+                                                    var data_tag = echarts.init(document.getElementById('data_tag'));
+
+                                                    // 配置图表
+                                                    var data_tag_option = {
+                                                        title: {
+                                                            text: handle + '的\n题目标签统计',
+                                                            left: 'center',
+                                                            textStyle: {
+                                                                fontSize: 24,
+                                                            }
+                                                        },
+                                                        tooltip: {
+                                                            trigger: 'item',
+                                                        },
+                                                        series: [
+                                                            {
+                                                                name: 'solved problems',
+                                                                type: 'pie',
+                                                                radius: '65%',
+                                                                center: ['50%', '50%'],
+                                                                data: data_data_tag.sort(function (a, b) {
+                                                                    return a.value - b.value;
+                                                                }),
+                                                                roseType: 'radius',
+                                                                label: {
+                                                                    fontSize: 13,
+                                                                    position: "outside",
+                                                                    rotate: 5,
+                                                                },
+                                                                labelLine: {
+                                                                    smooth: 0.2,
+                                                                    length: 10,
+                                                                    length2: 20
+                                                                },
+                                                                animationType: 'scale',
+                                                                animationEasing: 'sinusoidalOut',
+                                                                animationDelay: function (idx) {
+                                                                    return Math.random() * 200;
+                                                                }
+                                                            }
+                                                        ]
+                                                    };
+                                                    //显示图表
+                                                    data_tag.setOption(data_tag_option);
+
+                                                    var year_data = echarts.init(document.getElementById('year_data'));
+
+                                                    var year_data_option = {
+                                                        title: {
+                                                            text: handle + '的\n各年做题数',
+                                                            left: 'center',
+                                                            textStyle: {
+                                                                fontSize: 24,
+                                                            }
+                                                        },
+                                                        tooltip: {},
+                                                        legend: {
+                                                            data: ['solved problems'],
+                                                            right: "0%",
+                                                        },
+                                                        xAxis: {
+                                                            data: year,
+                                                        },
+                                                        yAxis: {},
+                                                        series: [
+                                                            {
+                                                                name: 'solved problems',
+                                                                type: 'bar',
+                                                                data: data_year_data,
+                                                            }
+                                                        ]
+                                                    };
+                                                    // 显示图表
+                                                    year_data.setOption(year_data_option);
+
+                                                    //配置年份选择
+                                                    let selected_year = null;
+                                                    const select_element = document.getElementById("select_year");
+                                                    for (let i = 0; i < year.length; i++) {
+                                                        const option_element = document.createElement("option");
+                                                        option_element.value = year[i];
+                                                        option_element.textContent = year[i];
+                                                        select_element.appendChild(option_element);
+                                                    }
+
+                                                    //为避免重复生成div设置flag
+                                                    var flag = 1;
+
+                                                    //监听年份选择
+                                                    select_element.addEventListener('change', function () {
+                                                        selected_year = parseInt(select_element.value);
+
+                                                        var selected_year_parsed = selected_year - 1900 - min_year;
+                                                        var data_month_data_per_year = jsonData.group_month_data_per_year[selected_year_parsed];
+                                                        var data_data_heat = jsonData.group_data_heat;
+
+                                                        if(flag == 1){
+                                                        // 创建month_data_per_year的 <div> 元素
+                                                        var dataMonthDataDiv = document.createElement('div');
+                                                        dataMonthDataDiv.id = 'month_data_per_year';
+                                                        dataMonthDataDiv.style.width = '90%';
+                                                        dataMonthDataDiv.style.height = '400px';
+                                                        dataMonthDataDiv.className = 'col-md-12 column';
+
+                                                        // 创建data_heat的 <div> 元素
+                                                        var dataHeat = document.createElement('div');
+                                                        dataHeat.id = 'data_heat';
+                                                        dataHeat.style.width = '100%';
+                                                        dataHeat.style.height = '260px';
+                                                        dataHeat.className = 'col-md-12 column';
+
+                                                        addcontainer.appendChild(dataMonthDataDiv);
+                                                        addcontainer.appendChild(dataHeat);
+                                                        flag = 0;
+                                                        }
+
+                                                        var month_data_per_year = echarts.init(document.getElementById('month_data_per_year'));
+
+                                                        // 指定图表的配置项和数据
+                                                        var month_data_per_year_option = {
+                                                            title: {
+                                                                text: handle + '\n在' + selected_year + '年的各月做题数',
+                                                                left: 'center',
+                                                                textStyle: {
+                                                                    fontSize: 22,
+                                                                }
+                                                            },
+                                                            tooltip: {},
+                                                            legend: {
+                                                                data: ['solved problems'],
+                                                                right: "0%",
+                                                            },
+                                                            xAxis: {
+                                                                data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                                                            },
+                                                            yAxis: {},
+                                                            series: [
+                                                                {
+                                                                    name: 'solved problems',
+                                                                    type: 'bar',
+                                                                    data: data_month_data_per_year,
+                                                                }
+                                                            ]
+                                                        };
+                                                        // 显示图表
+                                                        month_data_per_year.setOption(month_data_per_year_option);
+
+                                                        var formattedData = data_data_heat[selected_year_parsed].map(function (item) {
+                                                            return [item[0], item[1]];
+                                                        });
+
+                                                        // 获取年份范围
+                                                        var values = formattedData.map(function (item) {
+                                                            return item[1];
+                                                        });
+                                                        var min = Math.min.apply(null, values);
+                                                        var max = Math.max.apply(null, values);
+
+                                                        // 初始化echarts
+                                                        var data_heat = echarts.init(document.getElementById('data_heat'));
+
+                                                        // 配置图表
+                                                        var data_heat_option = {
+                                                            title: {
+                                                                top: 20,
+                                                                text: handle + '\n在' + selected_year + '年的做题记录',
+                                                                left: 'center',
+                                                                textStyle: {
+                                                                    fontSize: 22,
+                                                                }
+                                                            },
+                                                            tooltip: {
+                                                                formatter: function (params) {
+                                                                    var data = params.data;
+                                                                    var date = data[0];
+                                                                    var value = data[1];
+
+                                                                    return 'date: ' + date + '<br>' +
+                                                                        'solve problems: ' + value;
+                                                                }
+                                                            },
+                                                            calendar: [
+                                                                {
+                                                                    top: 100,
+                                                                    left: 'center',
+                                                                    range: [selected_year],
+                                                                    splitLine: {
+                                                                        show: true,
+                                                                        lineStyle: {
+                                                                            color: '#ffffff',
+                                                                            width: 4,
+                                                                            type: 'solid'
+                                                                        }
+                                                                    },
+                                                                    itemStyle: {
+                                                                        color: '#ebedf0',
+                                                                        borderWidth: 2,
+                                                                        borderColor: '#ffffff',
+                                                                    }
+                                                                },
+                                                            ],
+                                                            visualMap: {
+                                                                type: 'continuous',
+                                                                min: min,
+                                                                max: max,
+                                                                inRange: {
+                                                                    color: ['#91da9e', '#216e39']
+                                                                },
+                                                                calculable: true,
+
+                                                            },
+
+                                                            series: [
+                                                                {
+                                                                    name: 'solved problems',
+                                                                    type: 'heatmap',
+                                                                    coordinateSystem: 'calendar',
+                                                                    data: data_data_heat[selected_year_parsed],
+                                                                    emphasis: {
+                                                                        focus: 'self',
+                                                                        blurScope: 'global',
+                                                                        itemStyle: {
+                                                                            shadowBlur: 10,
+                                                                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                                                        }
+                                                                    },
+                                                                    universalTransition: {
+                                                                        enabled: true,
+                                                                    },
+                                                                    large: true,
+
+                                                                },
+
+                                                            ]
+                                                        };
+                                                        // 显示图表。
+                                                        data_heat.setOption(data_heat_option);
+                                                    });
+                                                }
+                                            </script>
+
+                </div>
+            </div>
+            <!-- 作为文件上传后显示部分 -->
+            <div class="col-md-12 column" id="addaddcontainer"></div>
+        </div>
+    </div>
+</body>
+
+</html>
