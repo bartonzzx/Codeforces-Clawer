@@ -14,7 +14,9 @@
 
 1.在visual studio中新建空项目
 
-2.根据视频(【五分钟掌握包管理！还在用难用的C语言/C++包管理？用VCPKG帮你便利第三方库的安装！以Curl第三方库为例演示VCPKG的安装和基本操作（文字简略版见简介）】(https://www.bilibili.com/video/BV1dM411g7a4?vd_source=0ebdc0a5050d0b187d206015b590c3e8)，安装包管理器vcpkg，通过vcpkg安装curl库、cjson库。方便在visual studio中配置c/c++配置第三方库
+2.根据视频教程，安装包管理器vcpkg，通过vcpkg安装curl库、cjson库。方便在visual studio中配置c/c++配置第三方库
+
+视频链接：(【五分钟掌握包管理！还在用难用的C语言/C++包管理？用VCPKG帮你便利第三方库的安装！以Curl第三方库为例演示VCPKG的安装和基本操作（文字简略版见简介）】(https://www.bilibili.com/video/BV1dM411g7a4?vd_source=0ebdc0a5050d0b187d206015b590c3e8)
 
 3.在“源文件”中导入CodeforcesRatingClawer2023.cpp
 
