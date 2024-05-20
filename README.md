@@ -6,23 +6,39 @@
 
 1.将CodeforcesRatingClawer2023.exe、libcurl.dll、zlib1.dll、cjson.dll放在同一目录下
 
-2.运行CodeforcesRatingClawer2023.exe，输入用户名，会自动获取用户数据，然后自动关闭(由于请求的是codeforce，可能需要科学上网)
+2.运行CodeforcesRatingClawer2023.exe，输入用户名，会自动获取用户数据，然后自动关闭(由于请求的是codeforce，可能需要科学上网)，在文件根目录下生成response.json和response_parsed.json
 
-3.打开CodeforcesRatingClawer2023.html，选取exe文件目录下的response_parsed.json，即可查看数据
+3.打开CodeforcesRatingClawer2023.html，在文件选择控件处,选中response_parsed.json，即可查看数据
 
 ## 开发方法
 
 1.在visual studio中新建空项目
 
-2.根据视频(【五分钟掌握包管理！还在用难用的C语言/C++包管理？用VCPKG帮你便利第三方库的安装！以Curl第三方库为例演示VCPKG的安装和基本操作（文字简略版见简介）】https://www.bilibili.com/video/BV1dM411g7a4?vd_source=0ebdc0a5050d0b187d206015b590c3e8)内的教程，安装包管理器vcpkg，通过vcpkg安装curl库、cjson库。方便在visual studio中配置c/c++配置第三方库
+2.根据视频(【五分钟掌握包管理！还在用难用的C语言/C++包管理？用VCPKG帮你便利第三方库的安装！以Curl第三方库为例演示VCPKG的安装和基本操作（文字简略版见简介）】https://www.bilibili.com/video/BV1dM411g7a4?vd_source=0ebdc0a5050d0b187d206015b590c3e8)，安装包管理器vcpkg，通过vcpkg安装curl库、cjson库。方便在visual studio中配置c/c++配置第三方库
 
 3.在“源文件”中导入CodeforcesRatingClawer2023.cpp
 
 4.打开cpp文件进行编辑
 
+其他详细内容请见word文档
+
 ## 打包方法
 
 推荐博客https://blog.csdn.net/m0_63509102/article/details/132416921
+
+## 说明
+
+* 关于数据准确性的说明:
+  * 统计数据全部来源于Codeforces用户Submission记录,因此过题数存在部分重复现象;
+  * 热力图数据全部来源于Codeforces用户Submission记录中的Accepted记录,且官方热力图数据统计规则较特殊,存在官方热力图不显示部分Submission记录,因此本热力图与官方热力图存在差别;
+
+* 关于难度分布图内的分类说明：
+  * problem rating <= 1000 : Easy
+  * 1000 < problem rating <=1500 : Intermediate
+  * 1500 < problem rating <=2000 : Moderate
+  * 2000 < problem rating <=2500 : Challenging
+  * 2500 < problem rating <=3000 : Difficult
+  * 3000 < problem rating : Expert
 
 ## 当前问题
 
