@@ -29,3 +29,13 @@
 1."假后端"：由于是初学C语言时编写的，对前后端数据交互尚不熟悉，通过单独运行exe文件和在html中选择exe文件处理结果的形式实现了“假后端”，日后改进
 
 2.未对重复做题的情况去重：由于有题型标签统计功能，如果同一道正确的题重复提交，该题对应的题型标签计数也会重复增加，而正确的题型统计只应该计数一次，需要通过哈希表或其他方法进行去重
+
+## 运行截图
+
+![image-20240520200408605](https://hila-1300222503.cos.ap-shanghai.myqcloud.com/md_image/image-20240520200408605.png)
+
+![image-20240520200415951](https://hila-1300222503.cos.ap-shanghai.myqcloud.com/md_image/image-20240520200415951.png)
+
+![image-20240520200424378](https://hila-1300222503.cos.ap-shanghai.myqcloud.com/md_image/image-20240520200424378.png)
+
+![image-20240520200458656](https://hila-1300222503.cos.ap-shanghai.myqcloud.com/md_image/image-20240520200458656.png)
