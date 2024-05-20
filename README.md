@@ -6,7 +6,7 @@
 
 1.将CodeforcesRatingClawer2023.exe、libcurl.dll、zlib1.dll、cjson.dll放在同一目录下
 
-2.运行CodeforcesRatingClawer2023.exe，输入用户名，会自动获取用户数据，然后自动关闭
+2.运行CodeforcesRatingClawer2023.exe，输入用户名，会自动获取用户数据，然后自动关闭(由于请求的是codeforce，可能需要科学上网)
 
 3.打开CodeforcesRatingClawer2023.html，选取exe文件目录下的response_parsed.json，即可查看数据
 
